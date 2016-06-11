@@ -1,5 +1,8 @@
 package sj.bodystats.Database;
 
+import android.app.Activity;
+import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,13 +20,18 @@ import sj.bodystats.Utility;
  * Created by Corsair on 6-6-2016.
  */
 public class MySQLContext implements DatabaseContext {
+    private Activity activity;
+
+    public MySQLContext(Activity activity) {
+        this.activity = activity;
+    }
 
     @Override
     public boolean insertWeight(double weight) {
         Utility.println("INSERTING WEIGHT: " + Double.toString(weight));
         String result = null;
         try {
-            result = new DatabaseTask("INSERT INTO Weight(weight,date)VALUES(" + weight + ",convert_tz(now(),@@session.time_zone,'+02:00'))", QueryTypes.EXECUTE).execute().get();
+            result = new DatabaseTask(activity, "INSERT INTO Weight(weight,date)VALUES(" + weight + ",convert_tz(now(),@@session.time_zone,'+02:00'))", QueryTypes.EXECUTE, true).execute().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -36,7 +44,7 @@ public class MySQLContext implements DatabaseContext {
     public List<WeightDate> getAllWeights() {
         List<WeightDate> weightDates = new ArrayList<>();
         try {
-            String result = new DatabaseTask(Queries.GET_ALL_WEIGHTS).execute().get();
+            String result = new DatabaseTask(activity, Queries.GET_ALL_WEIGHTS).execute().get();
             JSONArray jsonArray = parseJSON(result);
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -60,7 +68,7 @@ public class MySQLContext implements DatabaseContext {
     public double getLastInsertedWeight() {
         double weight = 0;
         try {
-            String result = new DatabaseTask(Queries.GET_LAST_INSERTED_WEIGHT).execute().get();
+            String result = new DatabaseTask(activity, Queries.GET_LAST_INSERTED_WEIGHT).execute().get();
             Utility.println("LAST INSERTED WEIGHT STRING: " + result);
             JSONArray jsonArray = parseJSON(result);
             JSONObject jsonObject = jsonArray.getJSONObject(0);

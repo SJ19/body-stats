@@ -9,16 +9,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import sj.bodystats.Database.Repository;
 import sj.bodystats.Model.WeightDate;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Repository repository = new Repository(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateWeightsList() {
-        Repository repo = new Repository();
+        Repository repo = new Repository(this);
         List<WeightDate> weightDates = repo.getAllWeights();
         List<String> listItems = new ArrayList<>();
 
@@ -42,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
             String dateString = dateFormat.format(weightDate.getDate());
             listItems.add(weightDate.getWeight() + " KG [ " + dateString + " ]");
         }
+        ListAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_rows, listItems);
 
-        ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listItems);
         ListView listView = (ListView)findViewById(R.id.listWeights);
         listView.setAdapter(adapter);
         listView.setSelection(adapter.getCount() - 1);
@@ -52,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupEditWeight() {
         final EditText editWeight = (EditText)findViewById(R.id.editWeight);
         editWeight.setGravity(Gravity.CENTER_HORIZONTAL);
-        double lastInsertedWeight = new Repository().getLastInsertedWeight();
+        double lastInsertedWeight = new Repository(this).getLastInsertedWeight();
         editWeight.setText(Double.toString(lastInsertedWeight));
     }
 
@@ -63,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final EditText editWeight = (EditText)findViewById(R.id.editWeight);
                 double newValue = Double.parseDouble(editWeight.getText().toString()) + 0.1;
-                editWeight.setText(String.format("%.1f", newValue));
+                editWeight.setText(String.format(Locale.ENGLISH, "%.1f", newValue));
             }
         });
     }
@@ -75,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final EditText editWeight = (EditText)findViewById(R.id.editWeight);
                 double newValue = Double.parseDouble(editWeight.getText().toString()) - 0.1;
-                editWeight.setText(String.format("%.1f", newValue));
+                editWeight.setText(String.format(Locale.ENGLISH, "%.1f", newValue));
             }
         });
     }
@@ -85,11 +91,10 @@ public class MainActivity extends AppCompatActivity {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //setWeightInputEnabled(false);
+                setWeightInputEnabled(false);
                 final EditText editWeight = (EditText) findViewById(R.id.editWeight);
                 double weight = Double.parseDouble(editWeight.getText().toString());
-                Repository repo = new Repository();
-                repo.insertWeight(weight);
+                repository.insertWeight(weight);
                 updateWeightsList();
 
                 // Confirmation toast.

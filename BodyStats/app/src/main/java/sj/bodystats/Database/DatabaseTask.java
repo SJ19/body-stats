@@ -1,6 +1,9 @@
 package sj.bodystats.Database;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -17,6 +20,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import sj.bodystats.MainActivity;
 import sj.bodystats.Utility;
 
 /**
@@ -29,15 +33,26 @@ public class DatabaseTask extends AsyncTask<String, Void, String> {
 
     private String query;
     private QueryTypes queryType;
+    private Activity activity;
+    private boolean enableButtons;
 
-    public DatabaseTask(String query, QueryTypes queryType) {
+    public DatabaseTask(Activity activity, String query, QueryTypes queryType, boolean enableButtons) {
+        this.activity = activity;
         this.query = query;
         this.queryType = queryType;
+        this.enableButtons = enableButtons;
     }
 
-    public DatabaseTask(Queries query) {
-        this.query = query.getQuery();
-        this.queryType = query.getQueryType();
+    public DatabaseTask(Activity activity, Queries query) {
+        this(activity, query.getQuery(), query.getQueryType(), false);
+    }
+
+    public DatabaseTask(Activity activity, String query, QueryTypes queryType) {
+        this(activity, query, queryType, false);
+    }
+
+    public DatabaseTask(Activity activity, Queries query, boolean enableButtons) {
+        this(activity, query.getQuery(), query.getQueryType(), enableButtons);
     }
 
     @Override
@@ -48,6 +63,16 @@ public class DatabaseTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         Log.d("app", result);
+
+        // Enable buttons after 2 seconds.
+        if (enableButtons) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ((MainActivity) activity).setWeightInputEnabled(true);
+                }
+            }, 2000);
+        }
     }
 
     private String readQuery(String query) {
