@@ -64,14 +64,14 @@ public class DatabaseTask extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         Log.d("app", result);
 
-        // Enable buttons after 2 seconds.
+        // Enable buttons after 4 seconds.
         if (enableButtons) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     ((MainActivity) activity).setWeightInputEnabled(true);
                 }
-            }, 2000);
+            }, 4000);
         }
     }
 

@@ -35,4 +35,8 @@ public class Repository {
     public double getLastInsertedWeight() {
         return databaseContext.getLastInsertedWeight();
     }
+
+    public boolean deleteLastInsertedWeight() {
+        return databaseContext.deleteLastInsertedWeight();
+    }
 }

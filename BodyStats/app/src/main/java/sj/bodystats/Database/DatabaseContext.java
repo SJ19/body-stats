@@ -13,4 +13,6 @@ public interface DatabaseContext {
     List<WeightDate> getAllWeights();
 
     double getLastInsertedWeight();
+
+    boolean deleteLastInsertedWeight();
 }

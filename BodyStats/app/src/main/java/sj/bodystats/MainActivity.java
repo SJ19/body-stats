@@ -1,9 +1,13 @@
 package sj.bodystats;
 
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,13 +54,33 @@ public class MainActivity extends AppCompatActivity {
         }
         ListAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_rows, listItems);
 
-        ListView listView = (ListView)findViewById(R.id.listWeights);
+        final ListView listView = (ListView) findViewById(R.id.listWeights);
         listView.setAdapter(adapter);
         listView.setSelection(adapter.getCount() - 1);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                // Confirmation snackbar with undo button.
+                Snackbar snackbar = Snackbar.make(view, "Delete weight?", Snackbar.LENGTH_LONG);
+
+                // Undo insert, so delete from db again.
+                snackbar.setAction("Confirm", new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        //updateWeightsList();
+
+                        Snackbar snackbar = Snackbar.make(v, "NOT IMPLEMENTED YET: Remove position on position: " + listView.getItemAtPosition(position).toString(), Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    }
+                });
+                snackbar.show();
+            }
+        });
     }
 
     private void setupEditWeight() {
-        final EditText editWeight = (EditText)findViewById(R.id.editWeight);
+        final EditText editWeight = (EditText) findViewById(R.id.editWeight);
         editWeight.setGravity(Gravity.CENTER_HORIZONTAL);
         double lastInsertedWeight = new Repository(this).getLastInsertedWeight();
         editWeight.setText(Double.toString(lastInsertedWeight));
@@ -67,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         increaseWeight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final EditText editWeight = (EditText)findViewById(R.id.editWeight);
+                final EditText editWeight = (EditText) findViewById(R.id.editWeight);
                 double newValue = Double.parseDouble(editWeight.getText().toString()) + 0.1;
                 editWeight.setText(String.format(Locale.ENGLISH, "%.1f", newValue));
             }
@@ -79,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         decreaseWeight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final EditText editWeight = (EditText)findViewById(R.id.editWeight);
+                final EditText editWeight = (EditText) findViewById(R.id.editWeight);
                 double newValue = Double.parseDouble(editWeight.getText().toString()) - 0.1;
                 editWeight.setText(String.format(Locale.ENGLISH, "%.1f", newValue));
             }
@@ -87,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setupUploadButton() {
-        final Button uploadButton = (Button)findViewById(R.id.uploadButton);
+        final Button uploadButton = (Button) findViewById(R.id.uploadButton);
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,17 +122,33 @@ public class MainActivity extends AppCompatActivity {
                 updateWeightsList();
 
                 // Confirmation toast.
-                Toast toast = Toast.makeText(getApplicationContext(), "Uploaded weight: " + weight, Toast.LENGTH_LONG);
+                /*Toast toast = Toast.makeText(getApplicationContext(), "Uploaded weight: " + weight, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 500);
-                toast.show();
+                toast.show();*/
+
+                // Confirmation snackbar with undo button.
+                Snackbar snackbar = Snackbar.make(v, "Weight " + weight + " uploaded", Snackbar.LENGTH_LONG);
+
+                // Undo insert, so delete from db again.
+                snackbar.setAction("Undo", new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        Utility.println("DELETE LAST SUCCESS: " + repository.deleteLastInsertedWeight());
+                        updateWeightsList();
+                        Snackbar snackbar = Snackbar.make(v, "Weight removed", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    }
+                });
+                snackbar.show();
             }
         });
     }
 
     public void setWeightInputEnabled(boolean enabled) {
-        final Button uploadButton = (Button)findViewById(R.id.uploadButton);
-        final Button increaseButton = (Button)findViewById(R.id.buttonIncreaseWeight);
-        final Button decreaseButton = (Button)findViewById(R.id.buttonDecreaseWeight);
+        final Button uploadButton = (Button) findViewById(R.id.uploadButton);
+        final Button increaseButton = (Button) findViewById(R.id.buttonIncreaseWeight);
+        final Button decreaseButton = (Button) findViewById(R.id.buttonDecreaseWeight);
         final EditText editText = (EditText) findViewById(R.id.editWeight);
 
         uploadButton.setEnabled(enabled);
