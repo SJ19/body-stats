@@ -39,4 +39,8 @@ public class Repository {
     public boolean deleteLastInsertedWeight() {
         return databaseContext.deleteLastInsertedWeight();
     }
+
+    public boolean deleteWeight(int id) {
+        return databaseContext.deleteWeight(id);
+    }
 }

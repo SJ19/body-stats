@@ -55,7 +55,7 @@ public class MySQLContext implements DatabaseContext {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 Date date = format.parse(dateString);
 
-                WeightDate weightDate = new WeightDate(weight, date);
+                WeightDate weightDate = new WeightDate(id, weight, date);
                 weightDates.add(weightDate);
             }
         } catch (Exception e) {
@@ -84,6 +84,19 @@ public class MySQLContext implements DatabaseContext {
         String result = null;
         try {
              result = new DatabaseTask(activity, Queries.DELETE_LAST_INSERTED_WEIGHT).execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return (result == "1" ? true : false);
+    }
+
+    @Override
+    public boolean deleteWeight(int id) {
+        String result = null;
+        try {
+            result = new DatabaseTask(activity, "DELETE FROM Weight WHERE id = " + id, QueryTypes.EXECUTE).execute().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

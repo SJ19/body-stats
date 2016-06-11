@@ -47,10 +47,14 @@ public class MainActivity extends AppCompatActivity {
         List<WeightDate> weightDates = repo.getAllWeights();
         List<String> listItems = new ArrayList<>();
 
+        // The actual weightdates.
+        final List<WeightDate> listItemWeightDates = new ArrayList<>();
+
         for (WeightDate weightDate : weightDates) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             String dateString = dateFormat.format(weightDate.getDate());
             listItems.add(weightDate.getWeight() + " KG [ " + dateString + " ]");
+            listItemWeightDates.add(weightDate);
         }
         ListAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_rows, listItems);
 
@@ -68,9 +72,13 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(View v) {
-                        //updateWeightsList();
-
-                        Snackbar snackbar = Snackbar.make(v, "NOT IMPLEMENTED YET: Remove position on position: " + listView.getItemAtPosition(position).toString(), Snackbar.LENGTH_SHORT);
+                        WeightDate weightDate = listItemWeightDates.get(position);
+                        int id = weightDate.getId();
+                        repository.deleteWeight(id);
+                        updateWeightsList();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        String dateString = dateFormat.format(weightDate.getDate());
+                        Snackbar snackbar = Snackbar.make(v, "Deleted " + weightDate.getWeight() + " on " + dateString, Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     }
                 });

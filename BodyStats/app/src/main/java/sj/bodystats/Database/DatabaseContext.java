@@ -15,4 +15,6 @@ public interface DatabaseContext {
     double getLastInsertedWeight();
 
     boolean deleteLastInsertedWeight();
+
+    boolean deleteWeight(int id);
 }
