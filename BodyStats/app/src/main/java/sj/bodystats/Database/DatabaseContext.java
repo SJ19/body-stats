@@ -8,7 +8,9 @@ import sj.bodystats.Model.WeightDate;
  * Created by Corsair on 6-6-2016.
  */
 public interface DatabaseContext {
-    boolean insertWeight(int weight);
+    boolean insertWeight(double weight);
 
     List<WeightDate> getAllWeights();
+
+    double getLastInsertedWeight();
 }

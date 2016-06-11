@@ -19,7 +19,8 @@ import sj.bodystats.Utility;
 public class MySQLContext implements DatabaseContext {
 
     @Override
-    public boolean insertWeight(int weight) {
+    public boolean insertWeight(double weight) {
+        Utility.println("INSERTING WEIGHT: " + Double.toString(weight));
         String result = null;
         try {
             result = new DatabaseTask("INSERT INTO Weight(weight,date)VALUES(" + weight + ",convert_tz(now(),@@session.time_zone,'+02:00'))", QueryTypes.EXECUTE).execute().get();
@@ -53,6 +54,21 @@ public class MySQLContext implements DatabaseContext {
             e.printStackTrace();
         }
         return weightDates;
+    }
+
+    @Override
+    public double getLastInsertedWeight() {
+        double weight = 0;
+        try {
+            String result = new DatabaseTask(Queries.GET_LAST_INSERTED_WEIGHT).execute().get();
+            Utility.println("LAST INSERTED WEIGHT STRING: " + result);
+            JSONArray jsonArray = parseJSON(result);
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            weight = Double.parseDouble(jsonObject.getString("weight"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return weight;
     }
 
     private JSONArray parseJSON(String jsonString) {

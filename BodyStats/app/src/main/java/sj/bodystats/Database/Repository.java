@@ -18,11 +18,15 @@ public class Repository {
         this.databaseContext = databaseContext;
     }
 
-    public boolean insertWeight(int weight) {
+    public boolean insertWeight(double weight) {
         return databaseContext.insertWeight(weight);
     }
 
     public List<WeightDate> getAllWeights() {
         return databaseContext.getAllWeights();
+    }
+
+    public double getLastInsertedWeight() {
+        return databaseContext.getLastInsertedWeight();
     }
 }

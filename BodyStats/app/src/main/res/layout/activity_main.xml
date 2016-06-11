@@ -11,8 +11,44 @@
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="300dip"
         android:id="@+id/listWeights"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="200dip"
+        android:layout_height="wrap_content"
+        android:text="Upload"
+        android:id="@+id/uploadButton"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/editWeight"
+        android:layout_above="@+id/uploadButton"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="60dip"
+        android:layout_height="wrap_content"
+        android:text="-0.1"
+        android:id="@+id/buttonDecreaseWeight"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="60dip"
+        android:layout_height="wrap_content"
+        android:text="+0.1"
+        android:id="@+id/buttonIncreaseWeight"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>

@@ -17,13 +17,15 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import sj.bodystats.Utility;
+
 /**
  * Created by Corsair on 10-6-2016.
  */
 public class DatabaseTask extends AsyncTask<String, Void, String> {
 
-    public static final String READ_QUERY_URL = "http://sjacobs.me/stronk/readquery.php";
-    public static final String EXECUTE_QUERY_URL = "http://sjacobs.me/stronk/executequery.php";
+    public static final String READ_QUERY_URL = "http://sjacobs.me/fitness/readquery.php";
+    public static final String EXECUTE_QUERY_URL = "http://sjacobs.me/fitness/executequery.php";
 
     private String query;
     private QueryTypes queryType;
@@ -49,6 +51,7 @@ public class DatabaseTask extends AsyncTask<String, Void, String> {
     }
 
     private String readQuery(String query) {
+        Utility.println("QUERY: " + query);
         String response = "";
         try {
             URL url;
